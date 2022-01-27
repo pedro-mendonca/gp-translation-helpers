@@ -31,63 +31,78 @@ gp_head();
 
 <div id="original" class="clear">
 <h1>
-    <?php
-    if ( $original->plural ) {
-    	esc_html_e( 'Singular: ' );
-    }
-
-    echo esc_html( $original->singular );
+	<?php
 	if ( $original->plural ) {
-        echo '<br />';
+		esc_html_e( 'Singular: ' );
+	}
+
+	echo esc_html( $original->singular );
+	if ( $original->plural ) {
+		echo '<br />';
 		esc_html_e( 'Plural: ' );
 		echo esc_html( $original->plural );
 	}
-    ?>
+	?>
 </h1>
 <?php if ( $translation ) : ?>
 	<p>
-		<?php echo esc_html( ucfirst( $translation->status ) ); ?> translation:
-        <?php if ( ( '' == $translation->translation_1 ) && ( '' == $translation->translation_2 ) &&
-                   ( '' == $translation->translation_3 ) && ( '' == $translation->translation_4 ) &&
-                   ( '' == $translation->translation_5 ) ) : ?>
-		    <strong><?php echo esc_html( $translation->translation_0 ); ?></strong>
-        <?php else : ?>
-            <ul id="translation-list">
-            <?php for ($i=0; $i<=5; $i++): ?>
-                <?php if ( '' != $translation->{'translation_' . $i} ) : ?>
-                    <li>
-                        <?php esc_html_e( $translation->{'translation_' . $i} ) ?>
-                    </li>
-                <?php endif ?>
-            <?php endfor ?>
-            </ul>
-        <?php endif ?>
+		<?php
+		$translation_permalink = GP_Route_Translation_Helpers::get_translation_permalink(
+			$project,
+			$locale_slug,
+			$translation_set_slug,
+			$original_id,
+			$translation->id
+		);
+
+		echo esc_html( ucfirst( $translation->status ) );
+		?>
+		 translation:
+		<?php
+		if ( ( '' == $translation->translation_1 ) && ( '' == $translation->translation_2 ) &&
+				   ( '' == $translation->translation_3 ) && ( '' == $translation->translation_4 ) &&
+				   ( '' == $translation->translation_5 ) ) :
+			?>
+			<strong><?php echo $translation_permalink ? gp_link( $translation_permalink, $translation->translation_0 ) : esc_html( $translation->translation_0 ); ?></strong>
+		<?php else : ?>
+			<ul id="translation-list">
+			<?php for ( $i = 0; $i <= 5; $i++ ) : ?>
+				<?php if ( '' != $translation->{'translation_' . $i} ) : ?>
+					<li>
+						<?php echo $translation_permalink ? gp_link( $translation_permalink, $translation->{'translation_' . $i} ) : esc_html( $translation->{'translation_' . $i} ); ?>
+					</li>
+				<?php endif ?>
+			<?php endfor ?>
+			</ul>
+		<?php endif ?>
 	</p>
 <?php elseif ( $existing_translations ) : ?>
 	<?php foreach ( $existing_translations as $e ) : ?>
 		<p>
 			<?php echo esc_html( ucfirst( $e->status ) ); ?> translation:
-            <?php if ( ( '' == $e->translation_1 ) && ( '' == $e->translation_2 ) &&
-                       ( '' == $e->translation_3 ) && ( '' == $e->translation_4 ) &&
-                       ( '' == $e->translation_5 ) ) : ?>
-                <strong><?php echo esc_html( $e->translation_0 ); ?></strong>
-            <?php else : ?>
-                <ul id="translation-list">
-                    <?php for ($i=0; $i<=5; $i++): ?>
-                        <?php if ( '' != $e->{'translation_' . $i} ) : ?>
-                            <li>
-                                <?php esc_html_e( $e->{'translation_' . $i} ) ?>
-                            </li>
-                        <?php endif ?>
-                    <?php endfor ?>
-                </ul>
-            <?php endif ?>
+			<?php
+			if ( ( '' == $e->translation_1 ) && ( '' == $e->translation_2 ) &&
+					   ( '' == $e->translation_3 ) && ( '' == $e->translation_4 ) &&
+					   ( '' == $e->translation_5 ) ) :
+				?>
+				<strong><?php echo $translation_permalink ? gp_link( $translation_permalink, $e->translation_0 ) : esc_html( $e->translation_0 ); ?></strong>
+			<?php else : ?>
+				<ul id="translation-list">
+					<?php for ( $i = 0; $i <= 5; $i++ ) : ?>
+						<?php if ( '' != $e->{'translation_' . $i} ) : ?>
+							<li>
+								<?php echo $translation_permalink ? gp_link( $translation_permalink, $e->{'translation_' . $i} ) : esc_html( $e->{'translation_' . $i} ); ?>
+							</li>
+						<?php endif ?>
+					<?php endfor ?>
+				</ul>
+			<?php endif ?>
 		</p>
 	<?php endforeach; ?>
 <?php else : ?>
-    <p>
-        <?php esc_html_e( 'This string has no translation in this language.' );?>
-    </p>
+	<p>
+		<?php esc_html_e( 'This string has no translation in this language.' ); ?>
+	</p>
 <?php endif; ?>
 <div class="translations" row="<?php echo esc_attr( $row_id . ( $translation ? '-' . $translation->id : '' ) ); ?>" replytocom="<?php echo esc_attr( gp_get( 'replytocom' ) ); ?>" >
 <div class="translation-helpers">
@@ -114,7 +129,7 @@ gp_head();
 		echo '</div>';
 		$is_first_class = '';
 	}
-		?>
+	?>
 </div>
 </div>
 </div>
