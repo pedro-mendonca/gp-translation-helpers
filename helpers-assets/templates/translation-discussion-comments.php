@@ -28,12 +28,15 @@
 		<?php
 		wp_list_comments(
 			array(
-				'style'              => 'ul',
-				'type'               => 'comment',
-				'callback'           => 'gth_discussion_callback',
-				'translation_id'     => $translation_id,
-				'locale_slug'        => $locale_slug,
-				'original_permalink' => $original_permalink,
+				'style'                => 'ul',
+				'type'                 => 'comment',
+				'callback'             => 'gth_discussion_callback',
+				'translation_id'       => $translation_id,
+				'locale_slug'          => $locale_slug,
+				'original_permalink'   => $original_permalink,
+				'original_id'          => $original_id,
+				'project'              => $project,
+				'translation_set_slug' => $translation_set_slug,
 			),
 			$comments
 		);
@@ -43,12 +46,12 @@
 	add_action(
 		'comment_form_logged_in_after',
 		function () use ( $locale_slug ) {
-			$language_question       = '';
+			$language_question = '';
 
 			if ( $locale_slug ) {
 				$gp_locale = GP_Locales::by_slug( $locale_slug );
 				if ( $gp_locale ) {
-					$language_question       = '<option value="question">Question about translating to ' . esc_html( $gp_locale->english_name ) . '</option>';
+					$language_question = '<option value="question">Question about translating to ' . esc_html( $gp_locale->english_name ) . '</option>';
 				}
 			}
 

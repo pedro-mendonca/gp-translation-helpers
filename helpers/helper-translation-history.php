@@ -57,6 +57,14 @@ class Helper_History extends GP_Translation_Helper {
 				$user               = get_userdata( $translation->user_id );
 				$user_last_modified = get_userdata( $translation->user_id_last_modified );
 
+				$translation_permalink = GP_Route_Translation_Helpers::get_translation_permalink(
+					$this->data['project'],
+					$this->data['locale_slug'],
+					$this->data['translation_set_slug'],
+					$this->data['original_id'],
+					$translation->id
+				);
+
 				if ( ( '' == $translation->translation_1 ) && ( '' == $translation->translation_2 ) &&
 					 ( '' == $translation->translation_3 ) && ( '' == $translation->translation_4 ) &&
 					 ( '' == $translation->translation_5 ) ) {
@@ -76,7 +84,7 @@ class Helper_History extends GP_Translation_Helper {
 					esc_attr( $translation->status ),
 					esc_attr( $translation->date_modified ?: $translation->date_added ),
 					esc_html( $date_and_time[0] ),
-					'<a href="' . esc_url( $this->get_translation_permalink( $translation->id ) ) . '">' . $output_translation . '</a>',
+					'<a href="' . esc_url( $translation_permalink ) . '">' . $output_translation . '</a>',
 					$user ? esc_html( $user->user_login ) : '&mdash;',
 					$user_last_modified ? esc_html( $user_last_modified->user_login ) : '&mdash;'
 				);
@@ -89,17 +97,5 @@ class Helper_History extends GP_Translation_Helper {
 		return 'No translation history for this string';
 	}
 
-	public function get_translation_permalink( $translation_id ) {
-		$translation_permalink = gp_url_project_locale(
-			$this->data['project'],
-			$this->data['locale_slug'],
-			$this->data['translation_set_slug'],
-			array(
-				'filters[status]'         => 'either',
-				'filters[original_id]'    => $this->data['original_id'],
-				'filters[translation_id]' => $translation_id,
-			)
-		);
-		return $translation_permalink;
-	}
+
 }
