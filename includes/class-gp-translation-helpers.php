@@ -8,6 +8,18 @@ class GP_Translation_Helpers {
 
 	public static function init() {
 		self::get_instance();
+		}
+
+	public function register_reject_feedback_js( $template ) {
+
+		if ( 'translations' !== $template ) {
+			return;
+		}
+
+		wp_register_script( 'gp-reject-feedback-js', plugins_url( '/../js/reject-feedback.js', __FILE__ ) );
+
+		gp_enqueue_script( 'gp-reject-feedback-js' );
+
 	}
 
 	public static function get_instance() {
@@ -21,7 +33,8 @@ class GP_Translation_Helpers {
 	public function __construct() {
 		add_action( 'template_redirect', array( $this, 'register_routes' ), 5 );
 		add_action( 'gp_before_request',    array( $this, 'before_request' ), 10, 2 );
-
+		add_action( 'gp_pre_tmpl_load', array( $this, 'register_reject_feedback_js' ), 10, 2 );
+	
 		add_filter(
 			'gp_translation_row_template_more_links',
 			function( $more_links, $project, $locale, $translation_set, $translation ) {
