@@ -8,7 +8,7 @@ class GP_Translation_Helpers {
 
 	public static function init() {
 		self::get_instance();
-		}
+	}
 
 	public function register_reject_feedback_js( $template ) {
 
@@ -16,10 +16,10 @@ class GP_Translation_Helpers {
 			return;
 		}
 
+		add_thickbox();
+
 		wp_register_script( 'gp-reject-feedback-js', plugins_url( '/../js/reject-feedback.js', __FILE__ ) );
-
 		gp_enqueue_script( 'gp-reject-feedback-js' );
-
 	}
 
 	public static function get_instance() {
@@ -32,9 +32,9 @@ class GP_Translation_Helpers {
 
 	public function __construct() {
 		add_action( 'template_redirect', array( $this, 'register_routes' ), 5 );
-		add_action( 'gp_before_request',    array( $this, 'before_request' ), 10, 2 );
+		add_action( 'gp_before_request', array( $this, 'before_request' ), 10, 2 );
 		add_action( 'gp_pre_tmpl_load', array( $this, 'register_reject_feedback_js' ), 10, 2 );
-	
+
 		add_filter(
 			'gp_translation_row_template_more_links',
 			function( $more_links, $project, $locale, $translation_set, $translation ) {
@@ -49,17 +49,17 @@ class GP_Translation_Helpers {
 			5
 		);
 
-		//Prevent remote POST to comment forms
-		add_filter( 
-			'preprocess_comment', 
-			function( $commentdata ){
+		// Prevent remote POST to comment forms
+		add_filter(
+			'preprocess_comment',
+			function( $commentdata ) {
 				if ( ! $commentdata['user_ID'] ) {
 					die( 'User not authorized!' );
 				}
 				return $commentdata;
 			}
 		);
-		
+
 		$this->helpers = self::load_helpers();
 	}
 
@@ -73,7 +73,7 @@ class GP_Translation_Helpers {
 				)
 			)
 		) {
-			add_action( 'gp_pre_tmpl_load',  array( $this, 'pre_tmpl_load' ), 10, 2 );
+			add_action( 'gp_pre_tmpl_load', array( $this, 'pre_tmpl_load' ), 10, 2 );
 		}
 	}
 
@@ -105,21 +105,25 @@ class GP_Translation_Helpers {
 		gp_enqueue_scripts( array( 'gp-translation-helpers' ) );
 
 		wp_localize_script( 'gp-translation-helpers', '$gp_translation_helpers_settings', $translation_helpers_settings );
-		wp_localize_script( 'gp-translation-helpers', 'wpApiSettings', array(
-			'root' => esc_url_raw( rest_url() ),
-			'nonce' => wp_create_nonce( 'wp_rest' )
-		) );
+		wp_localize_script(
+			'gp-translation-helpers',
+			'wpApiSettings',
+			array(
+				'root'  => esc_url_raw( rest_url() ),
+				'nonce' => wp_create_nonce( 'wp_rest' ),
+			)
+		);
 	}
 	public static function load_helpers() {
 		$base_dir = dirname( dirname( __FILE__ ) ) . '/helpers/';
 		require_once $base_dir . '/base-helper.php';
 
 		$helpers_files = array(
-			  'helper-translation-discussion.php',
-			  'helper-other-locales.php',
-			  'helper-translation-history.php',
-			  // 'helper-translation-memory.php',
-			  'helper-user-info.php',
+			'helper-translation-discussion.php',
+			'helper-other-locales.php',
+			'helper-translation-history.php',
+			// 'helper-translation-memory.php',
+			'helper-user-info.php',
 		);
 
 		foreach ( $helpers_files as $helper ) {
@@ -141,12 +145,12 @@ class GP_Translation_Helpers {
 
 	public function translation_helpers( $t, $translation_set ) {
 		$args = array(
-			'project_id'     => $t->project_id,
-			'locale_slug'    => $translation_set->locale,
-			'translation_set_slug'       => $translation_set->slug,
-			'original_id'    => $t->original_id,
-			'translation_id' => $t->id,
-			'translation'    => $t,
+			'project_id'           => $t->project_id,
+			'locale_slug'          => $translation_set->locale,
+			'translation_set_slug' => $translation_set->slug,
+			'original_id'          => $t->original_id,
+			'translation_id'       => $t->id,
+			'translation'          => $t,
 		);
 
 		$sections = array();
