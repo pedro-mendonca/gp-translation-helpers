@@ -35,6 +35,9 @@ class GP_Translation_Helpers {
 		add_action( 'gp_before_request', array( $this, 'before_request' ), 10, 2 );
 		add_action( 'gp_pre_tmpl_load', array( $this, 'register_reject_feedback_js' ), 10, 2 );
 
+		wp_register_style( 'gp-discussion-css', plugins_url( '/../css/discussion.css', __FILE__ ) );
+		gp_enqueue_style( 'gp-discussion-css' );
+
 		add_filter(
 			'gp_translation_row_template_more_links',
 			function( $more_links, $project, $locale, $translation_set, $translation ) {
