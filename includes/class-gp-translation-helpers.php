@@ -10,7 +10,7 @@ class GP_Translation_Helpers {
 		self::get_instance();
 	}
 
-	public function register_reject_feedback_js( $template ) {
+	public function register_reject_feedback_js( $template, $translation_set ) {
 
 		if ( 'translations' !== $template ) {
 			return;
@@ -20,6 +20,16 @@ class GP_Translation_Helpers {
 
 		wp_register_script( 'gp-reject-feedback-js', plugins_url( '/../js/reject-feedback.js', __FILE__ ) );
 		gp_enqueue_script( 'gp-reject-feedback-js' );
+
+		wp_localize_script(
+			'gp-reject-feedback-js',
+			'$gp_reject_feedback_settings',
+			array(
+				'url'         => admin_url( 'admin-ajax.php' ),
+				'nonce'       => wp_create_nonce( 'gp_reject_feedback' ),
+				'locale_slug' => $translation_set['locale_slug'],
+			)
+		);
 	}
 
 	public static function get_instance() {
@@ -34,6 +44,7 @@ class GP_Translation_Helpers {
 		add_action( 'template_redirect', array( $this, 'register_routes' ), 5 );
 		add_action( 'gp_before_request', array( $this, 'before_request' ), 10, 2 );
 		add_action( 'gp_pre_tmpl_load', array( $this, 'register_reject_feedback_js' ), 10, 2 );
+		add_action( 'wp_ajax_reject_with_feedback', array( $this, 'reject_with_feedback' ) );
 
 		wp_register_style( 'gp-discussion-css', plugins_url( '/../css/discussion.css', __FILE__ ) );
 		gp_enqueue_style( 'gp-discussion-css' );
@@ -224,6 +235,26 @@ class GP_Translation_Helpers {
 			?>
 		</script>
 		<?php
+	}
+
+	public function reject_with_feedback() {
+		if ( ! check_ajax_referer( 'gp_reject_feedback', 'nonce' ) ) {
+			return;
+		}
+
+		$locale_slug    = sanitize_text_field( $_POST['data']['locale_slug'] );
+		$original_id    = $_POST['data']['original_id'];
+		$translation_id = $_POST['data']['translation_id'];
+		$reject_reason  = isset( $_POST['data']['reason'] ) ? $_POST['data']['reason'] : '';
+		$reject_comment = sanitize_text_field( $_POST['data']['comment'] );
+
+		if ( ! $locale_slug || ! $translation_id ) {
+			return;
+		}
+		$translation = GP::$translation->get( $translation_id );
+		$translation->set_status( 'rejected' );
+
+		die();
 	}
 
 }
