@@ -17,9 +17,11 @@
 				}
 			}
 			?>
-						
+		
 			<span class="comments-selector">
-				<a href="#" class="active-link" data-selector="all">Show all (<?php echo esc_html( $number ); ?>)</a> | <a href="#" data-selector="<?php echo esc_attr( $locale_slug ); ?>"><?php echo esc_html( $locale_slug ); ?> only (<?php echo esc_html( $countLocaleComments ); ?>)</a>
+				<a href="#" class="active-link" data-selector="all">Show all (<?php echo esc_html( $number ); ?>)</a> | 
+				<a href="#" data-selector="<?php echo esc_attr( $locale_slug ); ?>"><?php echo esc_html( $locale_slug ); ?> only (<?php echo esc_html( $countLocaleComments ); ?>)</a> | 
+				<a href="#" data-selector="rejection-feedback">Rejection Feedback</a>
 			</span>
 		<?php endif; ?>
 		</h6>
@@ -43,12 +45,12 @@
 	add_action(
 		'comment_form_logged_in_after',
 		function () use ( $locale_slug ) {
-			$language_question       = '';
+			$language_question = '';
 
 			if ( $locale_slug ) {
 				$gp_locale = GP_Locales::by_slug( $locale_slug );
 				if ( $gp_locale ) {
-					$language_question       = '<option value="question">Question about translating to ' . esc_html( $gp_locale->english_name ) . '</option>';
+					$language_question = '<option value="question">Question about translating to ' . esc_html( $gp_locale->english_name ) . '</option>';
 				}
 			}
 

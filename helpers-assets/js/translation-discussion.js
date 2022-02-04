@@ -6,9 +6,13 @@ jQuery( function( $ ) {
 
 		var $comments = jQuery(e.target).parents('h6').next('.discussion-list');
 		var selector = $(e.target).data('selector');
+		
 		if ( 'all' === selector  ) {
 			$comments.children().show();
-		} else {
+		} else if ( 'rejection-feedback' === selector  ) {
+			$comments.children().hide();
+			$comments.children( '[data-rejection-feedback="true"]' ).show();
+		}  else {
 			$comments.children().hide();
 			$comments.children( '.comment-locale-' + selector ).show();
 			$comments.children( '.comment-locale-' + selector ).next('ul').show();
