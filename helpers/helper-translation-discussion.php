@@ -39,7 +39,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			'has_archive'       => false,
 			'show_in_rest'      => true,
 			'taxonomies'        => array( self::LINK_TAXONOMY ),
-			'rewrite' => false,
+			'rewrite'           => false,
 		);
 
 		register_post_type( self::POST_TYPE, $post_type_args );
@@ -63,7 +63,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 				'single'            => true,
 				'show_in_rest'      => true,
 				'sanitize_callback' => array( $this, 'sanitize_comment_locale' ),
-				'rewrite' => false,
+				'rewrite'           => false,
 			)
 		);
 
@@ -75,7 +75,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 				'single'            => true,
 				'show_in_rest'      => true,
 				'sanitize_callback' => array( $this, 'sanitize_comment_topic' ),
-				'rewrite' => false,
+				'rewrite'           => false,
 			)
 		);
 	}
@@ -285,11 +285,11 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 	$comment_locale = get_comment_meta( $comment->comment_ID, 'locale', true );
 	$current_locale = $args['locale_slug'];
 
-	$current_translation_id = $args['translation_id'];
-	$comment_translation_id = get_comment_meta( $comment->comment_ID, 'translation_id', true );
+	$current_translation_id  = $args['translation_id'];
+	$comment_translation_id  = get_comment_meta( $comment->comment_ID, 'translation_id', true );
 	$is_a_rejection_feedback = false;
-	$reject_reason = get_comment_meta( $comment->comment_ID, 'reject_reason', true );
-	if( ! empty( $reject_reason ) && ( $current_locale && $current_locale === $comment_locale ) ){
+	$reject_reason           = get_comment_meta( $comment->comment_ID, 'reject_reason', true );
+	if ( ! empty( $reject_reason ) && ( $current_locale && $current_locale === $comment_locale ) ) {
 		$is_a_rejection_feedback = true;
 	}
 	?>
@@ -382,7 +382,7 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 			<?php endif; ?>
 			<?php if ( $comment_translation_id && $comment_translation_id !== $current_translation_id ) : ?>
 				<?php $translation = GP::$translation->get( $comment_translation_id ); ?>
-				<em>Translation: <?php echo esc_translation( $translation->translation_0 ); ?></em>
+				<em><?php echo ( $is_a_rejection_feedback ? 'Translation (Rejected): ' : 'Translation: ' ) . esc_translation( $translation->translation_0 ); ?></em>
 			<?php endif; ?>
 			<div class="clear"></div>
 			<div id="comment-reply-<?php echo $comment->comment_ID; ?>" style="display: none;">
