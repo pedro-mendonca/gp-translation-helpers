@@ -319,7 +319,18 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 			<?php endif; ?>
 			</div>
 		<?php endif; ?>
-		<div class="comment-content" dir="auto"><?php comment_text(); ?></div>
+		<div class="comment-content" dir="auto">
+			<?php comment_text(); ?>
+			<?php if ( $reject_reason ) : ?>
+			<p>
+				Rejection Reason(s): 
+				<?php foreach ( $reject_reason as $reason ) : ?>
+					<span><?php echo esc_html( $reason ) . ' | '; ?></span> 
+				<?php endforeach; ?>
+			</p>
+			<?php endif; ?>
+		</div>
+		
 		<footer>
 			<div class="comment-author vcard">
 				<?php
